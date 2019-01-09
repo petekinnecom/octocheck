@@ -1,0 +1,154 @@
+#! /usr/bin/env ruby
+
+lib_dir = File.expand_path(File.join(__dir__, '../lib'))
+$LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
+
+require "optparse"
+require "json"
+require "octocheck/cli"
+
+HELP = <<~TXT
+  See github status checks in your terminal.
+  (https://help.github.com/en/articles/about-status-checks)
+
+  octocheck --branch myBranchName --project my_repo_name
+
+  [Options]
+
+  -b, --branch: defaults to current repo's branch
+  -p, --project: defaults to repo directory name
+  -o, --org: the Github org that owns the repo (see CONFIGURATION below)
+  -r, --revision: defaults to latest revision on current branch
+  -t, --token: your github API token (see CONFIGURATION below)
+
+  [CONFIGURATION]:
+
+  You can specify your github org and token in a configuration file so
+  that you don't need to configure them each time.
+
+  Put a json formatted file at ~/.config/octocheck/config.json with the
+  following data:
+
+    {
+      "token": "< github token value >",
+      "org": "< github org name >"
+    }
+
+  [ORG]:
+
+  Unfortunately when accessing status checks for a repo, the repo's
+  organization must be specified. :(  The organization can be found in
+  the repo's url:
+
+  https://github.com/ORGNAME/repo_name
+
+  [TOKEN]:
+
+  In order to read Github checks, you need to configure (or pass as an
+  argument) a token with rights to "repo" permissions:
+
+  1. Visit https://github.com/settings/tokens/new
+  2. Generate a new token
+  3. Grant the `repo` permission (leave all others unchecked)
+  4. Paste the token in the configuration file as specified in CONFIGURATION.
+
+  Unfortunately full `repo` access is needed in order to access Github
+  status checks. Hopefully they change that soon.
+
+  [OUTPUT]
+
+  Checks are listed in the order they are received. There is some basic
+  colorization applied based on the status names. When using Iterm2, the
+  status names are links to the check target. Other terminals have the
+  link appended to the output.
+TXT
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: octocheck [options]"
+
+  opts.on("-b BRANCH", "--branch BRANCH", "git branch (defaults to current repo branch)") do |b|
+    options[:branch] = b
+  end
+
+  opts.on("-p REPONAME", "--reponame REPONAME", "The reponame (defaults to repo directory)") do |p|
+    options[:reponame] = p
+  end
+
+  opts.on("-o ORG", "--org ORG", "The github organization name") do |o|
+    options[:org] = o
+  end
+
+  opts.on("-t TOKEN", "--token TOKEN", "The github access token") do |t|
+    options[:token] = t
+  end
+
+  opts.on("-r REVISION", "--revision REVISION", "The git revision to look for (defaults to revision of latest test run)") do |r|
+    options[:revision] = r
+
+    if !r.match(/\h{40}/)
+      warn("#{r} is not a full/valid git revision")
+      exit(1)
+    end
+  end
+
+  opts.on("-h", "--help", "See help") do
+    puts HELP
+    exit(0)
+  end
+
+end.parse!
+
+if ARGV.any?
+  puts HELP
+  exit(1)
+end
+
+if !options[:branch]
+  options[:branch] = `git rev-parse --abbrev-ref @`.chomp
+  if $? != 0
+    warn "Could not identify branch. Please specify one"
+    exit(1)
+  end
+end
+
+root_dir = nil
+
+if !options[:reponame]
+  root_dir ||=
+    File.basename(
+      `git rev-parse --show-toplevel`
+      .chomp
+      .tap { raise "detecting root dir failed" unless $?==0}
+    )
+
+  options[:reponame] = root_dir
+end
+
+config_file = File.expand_path("~/.config/octocheck/config.json")
+config = File.exist?(config_file) && JSON.parse(File.read(config_file))
+
+if !options[:org] && config
+  options[:org] = config["org"]
+end
+
+if !options[:org]
+  warn "Org not specified in command nor in config file. See --help for info."
+  exit(1)
+end
+
+if !options[:token] && config
+  options[:token] = config["token"]
+end
+
+if !options[:token]
+  warn "Token not specified in command nor in config file. See --help for info."
+  exit(1)
+end
+
+Octocheck::CLI.call(
+  token: options[:token],
+  branch: options[:branch],
+  repo: options[:reponame],
+  org: options[:org]
+)
