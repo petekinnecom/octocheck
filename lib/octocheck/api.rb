@@ -18,7 +18,7 @@ module Octocheck
           {
             name: j["context"],
             state: j["state"].downcase,
-            url: j["target_url"]
+            target_url: j["target_url"]
           }
         }
         .uniq {|j| j[:name]}
@@ -31,7 +31,8 @@ module Octocheck
           {
             name: cr["name"],
             state: cr["status"].downcase,
-            url: cr["details_url"],
+            github_url: "https://github.com/#{org}/#{repo}/runs/#{cr["id"]}",
+            target_url: cr["details_url"],
             details: check_run_details(cr["output"]["summary"])
           }
         }
@@ -49,7 +50,7 @@ module Octocheck
             {
               name: structure[:name],
               state: structure[:state].downcase,
-              url: structure[:url]
+              target_url: structure[:url]
             }
           else
             nil

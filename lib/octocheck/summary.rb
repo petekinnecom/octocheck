@@ -12,5 +12,9 @@ module Octocheck
     def statuses
       @statuses ||= api.statuses
     end
+
+    def summary_pages
+      @summary_pages ||= api.summary_pages
+    end
   end
 end
