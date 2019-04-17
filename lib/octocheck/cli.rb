@@ -19,7 +19,7 @@ module Octocheck
 
       using_iterm2 = (
         ENV["TERM_PROGRAM"] == "iTerm.app" &&
-        ENV.fetch("TERM_PROGRAM_VERSION", "").match(/3.[23456789].[123456789]/)
+        ENV.fetch("TERM_PROGRAM_VERSION", "").match(/3.[23456789]/)
       )
 
       formatter =
