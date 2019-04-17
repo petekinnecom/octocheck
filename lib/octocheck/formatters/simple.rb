@@ -22,7 +22,7 @@ module Octocheck
           cols << [
             colorize(status.fetch(:state)),
             status.fetch(:name),
-            status.fetch(:target_url)
+            gray(status.fetch(:target_url))
           ].join(" ")
         end
 
@@ -32,7 +32,7 @@ module Octocheck
           cols << [
             colorize(run.fetch(:state)),
             run.fetch(:name),
-            run.fetch(:target_url)
+            gray(run.fetch(:target_url))
           ].join(" ")
 
           run.fetch(:details).each do |detail|
@@ -41,7 +41,7 @@ module Octocheck
             cols << [
               colorize(detail.fetch(:state)),
               detail.fetch(:name),
-              detail.fetch(:target_url)
+              gray(detail.fetch(:target_url))
             ].join(" ")
           end
         end

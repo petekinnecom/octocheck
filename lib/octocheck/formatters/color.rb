@@ -2,6 +2,7 @@ module Octocheck
   module Formatters
     module Color
       CODES = {
+        gray: 30,
         red: 31,
         green: 32,
         yellow: 33,
