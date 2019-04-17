@@ -44,7 +44,7 @@ module Octocheck
       text
         .split("\n")
         .map { |r|
-          structure = r.match(/\[(?<name>.+)\]\((?<url>.+\)) - (?<state>.*)$/)
+          structure = r.match(/\[(?<name>.+)\]\((?<url>.+)\) - (?<state>.*)$/)
 
           if structure
             {
