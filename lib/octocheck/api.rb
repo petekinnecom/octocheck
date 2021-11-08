@@ -41,6 +41,8 @@ module Octocheck
     private
 
     def check_run_details(text)
+      return [] unless text
+
       text
         .split("\n")
         .map { |r|
