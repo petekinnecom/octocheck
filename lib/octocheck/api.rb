@@ -4,6 +4,8 @@ require "json"
 
 module Octocheck
   class Api
+    NotFoundError = Class.new(RuntimeError)
+
     attr_accessor :org, :branch, :repo, :token
     def initialize(org:, branch:, repo:, token:)
       @org = org
@@ -90,7 +92,7 @@ module Octocheck
       end
       http.use_ssl = true
       response = http.request(request)
-      raise "request failure:\n\n#{response.body}" unless response.code == "200"
+      raise NotFoundError.new("request failure:\n\n#{response.body}") unless response.code == "200"
       JSON.parse(response.body)
     end
 

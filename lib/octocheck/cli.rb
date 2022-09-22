@@ -30,6 +30,18 @@ module Octocheck
         end
 
       formatter.new($stdout).format(summary)
+    rescue Api::NotFoundError
+      warn <<~TXT
+        Couldn't fetch info for this branch. Some things to check:
+
+        - Has it been pushed to Github?
+        - Does this repo have status checks enabled?
+
+        Branch:
+        #{summary.branch_link}
+
+      TXT
+      exit(1)
     end
   end
 end
