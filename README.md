@@ -7,6 +7,13 @@ $ octocheck
 success     ci-check-1  https://example.com/ci-check-1
 in_progress ci-check-2  https://example.com/ci-check-2
 failed      ci-check-3  https://example.com/ci-check-3
+
+Branch:
+https://github.com/org/repo/tree/branchname
+
+PR:
+https://github.com/org/repo/pull/174
+
 ```
 
 ### Installation

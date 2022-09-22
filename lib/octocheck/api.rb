@@ -10,6 +10,14 @@ module Octocheck
       @branch = branch
       @repo = repo
       @token = token
+
+      @pr_links = []
+    end
+
+    def branch_link
+      return unless branch
+
+      "https://github.com/#{org}/#{repo}/tree/#{branch}"
     end
 
     def statuses
@@ -28,6 +36,14 @@ module Octocheck
       get("repos/#{org}/#{repo}/commits/#{branch}/check-runs")
         .fetch("check_runs")
         .map { |cr|
+          @pr_links += (
+            cr
+            .fetch("pull_requests", [])
+            .map { |pr| pr["number"] }
+            .compact
+            .map { |number| "https://github.com/#{org}/#{repo}/pull/#{number}" }
+          )
+
           {
             name: cr["name"],
             state: cr["status"].downcase,
@@ -36,6 +52,10 @@ module Octocheck
             details: check_run_details(cr["output"]["summary"])
           }
         }
+    end
+
+    def pr_links
+      @pr_links.uniq.sort
     end
 
     private

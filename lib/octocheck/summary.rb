@@ -5,8 +5,16 @@ module Octocheck
       @api = api
     end
 
+    def branch_link
+      @branch_link ||= api.branch_link
+    end
+
     def check_runs
       @check_runs ||= api.check_runs
+    end
+
+    def pr_links
+      @pr_links ||= api.pr_links
     end
 
     def statuses

@@ -60,8 +60,30 @@ module Octocheck
             .map {|cr| cr.fetch(:github_url) }
             .join("\n")
 
-        io.puts(["", state_summaries, link_summaries].join("\n"))
+        output = [
+          "",
+          state_summaries,
+          link_summaries,
+        ]
 
+        if summary.branch_link
+          output += [
+            "",
+            "Branch:",
+            summary.branch_link
+
+          ]
+        end
+
+        (summary.pr_links || []).each do |repo_link|
+          output += [
+            "",
+            "Pull Request:",
+            repo_link
+          ]
+        end
+
+        io.puts(output.join("\n"))
       end
 
       def colorize(text)
