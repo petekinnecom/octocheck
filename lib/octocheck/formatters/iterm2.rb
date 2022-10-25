@@ -20,8 +20,8 @@ module Octocheck
           counts[status.fetch(:state)] = (counts[status.fetch(:state)] || 0) + 1
 
           cols << [
-            linkify(status.fetch(:state), status.fetch(:target_url)),
-            status.fetch(:name)
+            colorify(status.fetch(:state)),
+            linkify(status.fetch(:name), status.fetch(:target_url))
           ].join(" ")
         end
 
@@ -29,16 +29,16 @@ module Octocheck
           counts[run.fetch(:state)] = (counts[run.fetch(:state)] || 0) + 1
 
           cols << [
-            linkify(run.fetch(:state), run.fetch(:target_url)),
-            run.fetch(:name)
+            colorify(run.fetch(:state)),
+            linkify(run.fetch(:name), run.fetch(:target_url))
           ].join(" ")
 
           run.fetch(:details).each do |detail|
             counts[detail.fetch(:state)] = (counts[detail.fetch(:state)] || 0) + 1
 
             cols << [
-              linkify(detail.fetch(:state), detail.fetch(:target_url)),
-              detail.fetch(:name)
+              colorify(detail.fetch(:state)),
+              linkify(detail.fetch(:name), detail.fetch(:target_url))
             ].join(" ")
           end
         end
@@ -83,19 +83,20 @@ module Octocheck
         io.puts(output.join("\n"))
       end
 
-      def linkify(text, url)
-        colorized_text =
-          if text.match(GREEN_REGEX)
-            green(text)
-          elsif text.match(RED_REGEX)
-            red(text)
-          elsif text.match(BLUE_REGEX)
-            blue(text)
-          else
-            yellow(text)
-          end
+      def colorify(text)
+        if text.match(GREEN_REGEX)
+          green(text)
+        elsif text.match(RED_REGEX)
+          red(text)
+        elsif text.match(BLUE_REGEX)
+          blue(text)
+        else
+          yellow(text)
+        end
+      end
 
-        "\e]8;;#{url}\a#{colorized_text}\e]8;;\a"
+      def linkify(text, url)
+        "\e]8;;#{url}\a#{text}\e]8;;\a"
       end
     end
   end

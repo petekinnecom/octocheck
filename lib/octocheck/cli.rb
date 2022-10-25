@@ -17,10 +17,7 @@ module Octocheck
         api: api
       )
 
-      using_iterm2 = (
-        ENV["TERM_PROGRAM"] == "iTerm.app" &&
-        ENV.fetch("TERM_PROGRAM_VERSION", "").match(/3.[23456789]/)
-      )
+      using_iterm2 = ["iTerm.app", "vscode"].include?(ENV["TERM_PROGRAM"])
 
       formatter =
         if using_iterm2

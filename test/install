@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -ex
+
+gem uninstall -Ix octocheck
+gem build octocheck.gemspec
+gem install octocheck-$(grep -oEi '\d+\.\d+\.\d+' lib/octocheck/version.rb).gem
