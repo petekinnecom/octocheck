@@ -13,6 +13,10 @@ module Octocheck
       @check_runs ||= api.check_runs
     end
 
+    def open_pr_link
+      @open_pr_link ||= api.open_pr_link
+    end
+
     def pr_links
       @pr_links ||= api.pr_links
     end

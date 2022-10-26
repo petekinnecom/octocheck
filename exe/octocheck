@@ -16,7 +16,7 @@ HELP = <<~TXT
   [Options]
 
   -b, --branch: defaults to current repo's branch
-  -p, --project: defaults to repo directory name
+  -p, --reponame: defaults to repo directory name
   -o, --org: the Github org that owns the repo (see CONFIGURATION below)
   -r, --revision: defaults to latest revision on current branch
   -t, --token: your github API token (see CONFIGURATION below)
@@ -58,9 +58,9 @@ HELP = <<~TXT
   [OUTPUT]
 
   Checks are listed in the order they are received. There is some basic
-  colorization applied based on the status names. When using Iterm2, the
-  status names are links to the check target. Other terminals have the
-  link appended to the output.
+  colorization applied based on the status names. When using Iterm2 or vscode,
+  the status names are links to the check target. Other terminals have the link
+  appended to the output.
 TXT
 
 options = {}

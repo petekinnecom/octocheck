@@ -1,5 +1,8 @@
 See github status checks in your terminal. (https://help.github.com/en/articles/about-status-checks)
 
+Bonus: displays a link to an existing PR!
+Super bonus: displays a link to open a PR if one doesn't exist!
+Super extra bonus: use this in front of your non-programmer friends and they will think you are a super cool hacker!
 
 ```
 $ octocheck

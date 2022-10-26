@@ -22,6 +22,12 @@ module Octocheck
       "https://github.com/#{org}/#{repo}/tree/#{branch}"
     end
 
+    def open_pr_link
+      return unless branch
+
+      "https://github.com/appfolio/apm_bundle/compare/#{branch}?expand=1"
+    end
+
     def statuses
       get("repos/#{org}/#{repo}/commits/#{branch}/statuses")
         .map {|j|

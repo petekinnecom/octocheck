@@ -72,12 +72,21 @@ module Octocheck
           ]
         end
 
-        (summary.pr_links || []).each do |repo_link|
-          output += [
-            "",
-            "Pull Request:",
-            repo_link
-          ]
+        if summary.pr_links.empty? && summary.open_pr_link
+            output += [
+              "",
+              "Open Pull Request:",
+              summary.open_pr_link
+            ]
+
+        else
+          (summary.pr_links).each do |repo_link|
+            output += [
+              "",
+              "Pull Request:",
+              repo_link
+            ]
+          end
         end
 
         io.puts(output.join("\n"))
